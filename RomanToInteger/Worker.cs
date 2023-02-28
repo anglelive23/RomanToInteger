@@ -29,22 +29,15 @@ namespace RomanToInteger
         {
             var romanSpan = roman.AsSpan();
             int value = 0;
-            bool skip = false;
             for (int i = 0; i < romanSpan.Length; i++)
             {
-                if (skip)
-                {
-                    skip = false;
-                    continue;
-                }
-
                 var current = romanSpan[i];
                 var next = (i != romanSpan.Length - 1) ? romanSpan[i + 1] : ' ';
 
                 if (IsRomanPrefix(current, next))
                 {
                     value += RomanPrefixValue(current, next);
-                    skip = true;
+                    i++; // Skipping next iteration
                     continue;
                 }
                 value += RomanValue(current);
