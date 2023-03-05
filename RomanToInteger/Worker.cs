@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RomanToInteger
+﻿namespace RomanToInteger
 {
     public class Worker
     {
@@ -26,51 +20,24 @@ namespace RomanToInteger
                 Console.WriteLine(ex.Message);
             }
         }
-        public int ConvertRomanToEnglish(ReadOnlySpan<char> roman)
+
+        public int ConvertRomanToEnglish(ReadOnlySpan<char> romanSpan)
         {
             int value = 0;
-            for (int i = 0; i < roman.Length; i++)
+            for (int i = 0; i < romanSpan.Length; i++)
             {
-                var current = roman[i];
-                var next = (i != roman.Length - 1) ? roman[i + 1] : ' ';
+                var current = GetRomanValue(romanSpan[i]);
+                var next = (i != romanSpan.Length - 1) ? GetRomanValue(romanSpan[i + 1]) : 0;
 
-                if (IsRomanPrefix(current, next))
+                if (current < next)
                 {
-                    value += GetPrefixValue(current, next);
-                    i++; // Skipping next iteration
+                    value += (next - current);
+                    i++;
                     continue;
                 }
-                value += GetRomanValue(current);
+                value += current;
             }
             return value;
-        }
-
-        public bool IsRomanPrefix(char current, char next)
-        {
-            return (current, next) switch
-            {
-                ('I', 'V') => true,
-                ('I', 'X') => true,
-                ('X', 'L') => true,
-                ('X', 'C') => true,
-                ('C', 'D') => true,
-                ('C', 'M') => true,
-                _ => false
-            };
-        }
-
-        public int GetPrefixValue(char current, char next)
-        {
-            return (current, next) switch
-            {
-                ('I', 'V') => 4,
-                ('I', 'X') => 9,
-                ('X', 'L') => 40,
-                ('X', 'C') => 90,
-                ('C', 'D') => 400,
-                ('C', 'M') => 900,
-                _ => 0
-            };
         }
 
         public int GetRomanValue(char roman)
