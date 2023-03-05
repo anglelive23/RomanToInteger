@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace RomanToInteger
 {
@@ -17,67 +16,66 @@ namespace RomanToInteger
         {
             try
             {
-                string roman = Console.ReadLine();
-                ConvertRomanToInteger(roman);
+                Console.Write("Roman: ");
+                ReadOnlySpan<char> roman = Console.ReadLine().ToUpper().AsSpan();
+                int english = ConvertRomanToEnglish(roman);
+                Console.WriteLine($"English: {english}");
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
         }
-        public void ConvertRomanToInteger(string roman)
+        public int ConvertRomanToEnglish(ReadOnlySpan<char> roman)
         {
-            var romanSpan = roman.AsSpan();
             int value = 0;
-            for (int i = 0; i < romanSpan.Length; i++)
+            for (int i = 0; i < roman.Length; i++)
             {
-                var current = romanSpan[i];
-                var next = (i != romanSpan.Length - 1) ? romanSpan[i + 1] : ' ';
+                var current = roman[i];
+                var next = (i != roman.Length - 1) ? roman[i + 1] : ' ';
 
                 if (IsRomanPrefix(current, next))
                 {
-                    value += RomanPrefixValue(current, next);
+                    value += GetPrefixValue(current, next);
                     i++; // Skipping next iteration
                     continue;
                 }
-                value += RomanValue(current);
+                value += GetRomanValue(current);
             }
-            Console.WriteLine(value);
+            return value;
         }
 
         public bool IsRomanPrefix(char current, char next)
         {
-            bool isPrefix = string.Join("", new[] { current, next }) switch
+            return (current, next) switch
             {
-                "IV" => true,
-                "IX" => true,
-                "XL" => true,
-                "XC" => true,
-                "CD" => true,
-                "CM" => true,
+                ('I', 'V') => true,
+                ('I', 'X') => true,
+                ('X', 'L') => true,
+                ('X', 'C') => true,
+                ('C', 'D') => true,
+                ('C', 'M') => true,
                 _ => false
             };
-            return isPrefix;
         }
 
-        public int RomanPrefixValue(char current, char next)
+        public int GetPrefixValue(char current, char next)
         {
-            int value = string.Join("", new[] { current, next }) switch
+            return (current, next) switch
             {
-                "IV" => 4,
-                "IX" => 9,
-                "XL" => 40,
-                "XC" => 90,
-                "CD" => 400,
-                "CM" => 900,
+                ('I', 'V') => 4,
+                ('I', 'X') => 9,
+                ('X', 'L') => 40,
+                ('X', 'C') => 90,
+                ('C', 'D') => 400,
+                ('C', 'M') => 900,
                 _ => 0
             };
-            return value;
         }
 
-        public int RomanValue(char roman)
+        public int GetRomanValue(char roman)
         {
-            int value = char.ToUpper(roman) switch
+            return roman switch
             {
                 'I' => 1,
                 'V' => 5,
@@ -88,7 +86,6 @@ namespace RomanToInteger
                 'M' => 1000,
                 _ => 0
             };
-            return value;
         }
     }
 }

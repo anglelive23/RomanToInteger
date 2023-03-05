@@ -2,5 +2,7 @@
 using RomanToInteger;
 
 Console.WriteLine("Roman!, Let's convert it...");
-Worker worker = new();
-Console.ReadKey();
+while (true)
+{
+    Worker worker = new();
+}
